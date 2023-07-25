@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,9 @@ import "react-toastify/dist/ReactToastify.css";
 const schema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
   email: z.string().email({ message: "Email is required" }),
-  password: z.string().min(8, { message: "Password must have at least 8 characters" }),
+  password: z
+    .string()
+    .min(8, { message: "Password must have at least 8 characters" }),
 });
 
 //@ts-ignore
@@ -20,16 +22,29 @@ const saveForm = (data) => {
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    getValues,
+  } = useForm<z.infer<typeof schema>>();
 
   const debouncedSave = debounce((data) => {
     const validationResult = schema.safeParse(data);
     if (validationResult.success) {
       saveForm(data);
       setIsLoading(false);
-      toast.success(`Autosaved successfully! Autosaved form state: ${JSON.stringify(data, null, 2)}`, {
-        autoClose: 2000,
-      });
+      toast.success(
+        `Autosaved successfully! Autosaved form state: ${JSON.stringify(
+          data,
+          null,
+          2
+        )}`,
+        {
+          autoClose: 2000,
+        }
+      );
     } else {
       handleError(validationResult.error.formErrors);
     }
@@ -40,24 +55,27 @@ const RegisterForm = () => {
       debouncedSave.cancel();
     };
   }, []);
-//@ts-ignore
-const handleRegistration = (data) => {
-  const validationResult = schema.safeParse(data);
-  if (validationResult.success) {
-    console.log("Valid form data:", validationResult.data);
-    setIsLoading(true);
-    setTimeout(() => {
-      saveForm(data);
-      setIsLoading(false);
-      toast.success(`Saved successfully! Form state: ${JSON.stringify(data, null, 2)}`, {
-        autoClose: 3000,
-      });
-    }, 1000);
-  } else {
-    handleError(validationResult.error.formErrors);
-  }
-};
-//@ts-ignore
+  //@ts-ignore
+  const handleRegistration = (data) => {
+    const validationResult = schema.safeParse(data);
+    if (validationResult.success) {
+      console.log("Valid form data:", validationResult.data);
+      setIsLoading(true);
+      setTimeout(() => {
+        saveForm(data);
+        setIsLoading(false);
+        toast.success(
+          `Saved successfully! Form state: ${JSON.stringify(data, null, 2)}`,
+          {
+            autoClose: 3000,
+          }
+        );
+      }, 1000);
+    } else {
+      handleError(validationResult.error.formErrors);
+    }
+  };
+  //@ts-ignore
   const handleError = (formErrors) => {
     console.log("Form errors:", formErrors);
     // Handle form errors here
@@ -68,22 +86,21 @@ const handleRegistration = (data) => {
   };
 
   return (
-    <form className="flex flex-col gap-4 p-4 bg-[#202A3C]" onSubmit={handleSubmit(handleRegistration)}>
+    <form
+      className="flex flex-col gap-4 p-4 bg-[#202A3C]"
+      onSubmit={handleSubmit(handleRegistration)}
+    >
       <div className="flex flex-col gap-4">
         <label className="text-white font-semibold" htmlFor="name">
           Name
         </label>
         <input
           className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-          //@ts-ignore
-
-          name="name"
           type="text"
           {...register("name", { required: "Name is required" })}
           onChange={handleChange}
         />
         <small className="text-red-700">
-
           {errors?.name && errors.name.message}
         </small>
       </div>
@@ -93,9 +110,6 @@ const handleRegistration = (data) => {
         </label>
         <input
           className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-          //@ts-ignore
-
-          name="email"
           type="email"
           {...register("email", { required: "Email is required" })}
           onChange={handleChange}
@@ -110,8 +124,6 @@ const handleRegistration = (data) => {
         </label>
         <input
           className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-          //@ts-ignore
-          name="password"
           type="password"
           {...register("password", {
             required: "Password is required",
@@ -129,7 +141,8 @@ const handleRegistration = (data) => {
       <button
         type="submit"
         className={`mt-8 flex w-full items-center justify-center space-x-2 rounded-lg bg-primary px-4 py-2 text-lg font-bold text-white hover:bg-white hover:text-primary hover:text-[#202A3C] hover:duration-500 hover:ease-in-out ${
-          isLoading ? "cursor-wait" : ""}`}
+          isLoading ? "cursor-wait" : ""
+        }`}
       >
         {isLoading ? (
           <>
