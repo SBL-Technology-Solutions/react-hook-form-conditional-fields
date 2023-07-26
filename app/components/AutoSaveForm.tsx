@@ -96,7 +96,7 @@ export const AutoSaveForm = () => {
       </div>
 
       <form
-        className="flex flex-col gap-4 py-4"
+        className="flex flex-col gap-4 py-8"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="flex flex-col gap-4">
