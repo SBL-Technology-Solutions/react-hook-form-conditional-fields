@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { debounce } from "lodash";
 import { z } from "zod";
 import { toast } from "react-toastify";
 
-const schema = z.object({
+const formSchema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
   email: z.string().email({ message: "Email is required" }),
   password: z
@@ -26,10 +27,13 @@ export const AutoSaveForm = () => {
     handleSubmit,
     formState: { errors },
     getValues,
-  } = useForm<z.infer<typeof schema>>();
+  } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    mode: "all",
+  });
 
   const debouncedSave = debounce((data) => {
-    const validationResult = schema.safeParse(data);
+    const validationResult = formSchema.safeParse(data);
     if (validationResult.success) {
       saveForm(data);
       setIsLoading(false);
@@ -55,7 +59,7 @@ export const AutoSaveForm = () => {
   }, []);
   //@ts-ignore
   const handleRegistration = (data) => {
-    const validationResult = schema.safeParse(data);
+    const validationResult = formSchema.safeParse(data);
     if (validationResult.success) {
       console.log("Valid form data:", validationResult.data);
       setIsLoading(true);
@@ -95,7 +99,7 @@ export const AutoSaveForm = () => {
         <input
           className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
           type="text"
-          {...register("name", { required: "Name is required" })}
+          {...register("name")}
           onChange={handleChange}
         />
         <small className="text-red-700">
@@ -109,7 +113,7 @@ export const AutoSaveForm = () => {
         <input
           className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
           type="email"
-          {...register("email", { required: "Email is required" })}
+          {...register("email")}
           onChange={handleChange}
         />
         <small className="text-red-700">
@@ -123,13 +127,7 @@ export const AutoSaveForm = () => {
         <input
           className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
           type="password"
-          {...register("password", {
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must have at least 8 characters",
-            },
-          })}
+          {...register("password")}
           onChange={handleChange}
         />
         <small className="text-red-700">
