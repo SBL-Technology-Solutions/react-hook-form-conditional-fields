@@ -26,7 +26,7 @@ export const AutoSaveForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, dirtyFields, isSubmitting },
+    formState: { errors, isDirty, dirtyFields },
     watch,
     reset,
   } = useForm<z.infer<typeof formSchema>>({
@@ -43,17 +43,13 @@ export const AutoSaveForm = () => {
   const DebouncedValueStringified = JSON.stringify(debouncedValue);
 
   useEffect(() => {
-    console.log(
-      "save is triggered, checking if isDirty is true and form is not submitted"
-    );
+    console.log("save is triggered, checking if isDirty is true");
     const debouncedSave = async () => {
-      if (!isDirty || isSubmitting) {
-        console.log(
-          "autosave not triggered because form is either not dirty or isSubmitting"
-        );
+      if (!isDirty) {
+        console.log("autosave not triggered because form is not dirty");
         return;
       }
-      console.log("isDirty is true and not amidst a submit, saving form data");
+      console.log("isDirty is true, saving form data");
       setIsLoading(true);
       //simulate API call and wait 2 seconds
       await mockedAPICall(2000);
@@ -92,7 +88,6 @@ export const AutoSaveForm = () => {
         <span>isDirty: {isDirty.toString()}</span>
         <span>Dirty Fields: {JSON.stringify(dirtyFields, null, 2)}</span>
         <span>Debounced Value: {JSON.stringify(debouncedValue, null, 2)}</span>
-        <span>isSubmitting: {isSubmitting.toString()}</span>
       </div>
 
       <form
