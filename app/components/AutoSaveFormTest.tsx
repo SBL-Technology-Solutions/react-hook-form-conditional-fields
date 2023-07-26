@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,12 +15,17 @@ const formSchema = z.object({
   message: z.string().nonempty({ message: "Message is required" }),
 });
 
+const mockedAPICall = async (timeout: number = 2000) => {
+  console.log("making an API request");
+  await new Promise((resolve) => setTimeout(resolve, timeout));
+};
+
 export const AutoSaveFormTest = () => {
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
-    formState: { errors, touchedFields, isDirty, dirtyFields },
+    formState: { errors, isDirty, dirtyFields },
     watch,
     reset,
   } = useForm<z.infer<typeof formSchema>>({
@@ -33,43 +38,51 @@ export const AutoSaveFormTest = () => {
     },
   });
 
-  const debouncedValue = useDebounce(watch(), 3000);
-  const JSONifiedDebouncedValue = JSON.stringify(debouncedValue);
+  const debouncedValue = useDebounce(watch(), 1000);
+  const DebouncedValueStringified = JSON.stringify(debouncedValue);
 
   useEffect(() => {
     console.log("save is triggered, checking if isDirty is true");
-    const debouncedSave = (values: z.infer<typeof formSchema>) => {
+    const debouncedSave = async () => {
       if (isDirty) {
         console.log("isDirty is true, saving form data");
         setIsLoading(true);
         //simulate API call and wait 2 seconds
-        setTimeout(() => {
-          toast.info(
-            `Autosaving form state: ${JSON.stringify(values, null, 2)}`,
-            {
-              autoClose: 2000,
-            }
-          );
-          reset({ ...values });
-          setIsLoading(false);
-        }, 2000);
+        await mockedAPICall(2000);
+        toast.success(
+          `Autosaving form state: ${JSON.stringify(debouncedValue, null, 2)}`,
+          {
+            autoClose: 3000,
+          }
+        );
+        reset({ ...debouncedValue });
+        setIsLoading(false);
       }
     };
-    debouncedSave(debouncedValue);
-  }, [JSONifiedDebouncedValue]);
+
+    debouncedSave();
+    // We are explicitly using only the debouncedValue as a dependency because we only want this useEffect to run when the debouncedValue changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [DebouncedValueStringified]);
+
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    console.log("submitting form data:", data);
+    toast.success(`Form submitted successfully!`, {
+      autoClose: 2000,
+    });
+  };
 
   return (
     <div className="p-4">
       <div className="flex flex-col gap-2 text-white font-semibold">
         <span>isDirty: {isDirty ? "yes" : "no"}</span>
         <span>Dirty Fields: {JSON.stringify(dirtyFields, null, 2)}</span>
-        <span>Touched Fields: {JSON.stringify(touchedFields, null, 2)}</span>
         <span>Debounced Value: {JSON.stringify(debouncedValue, null, 2)}</span>
       </div>
 
       <form
         className="flex flex-col gap-4 py-4"
-        // onSubmit={handleSubmit(handleRegistration)}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <div className="flex flex-col gap-4">
           <label className="text-white font-semibold" htmlFor="name">
