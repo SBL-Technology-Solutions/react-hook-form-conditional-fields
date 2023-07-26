@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "react-toastify";
 import { Button } from "@/components/ui/Button";
 import { Loader2, Send } from "lucide-react";
 import { useDebounce } from "usehooks-ts";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
@@ -21,6 +21,7 @@ const mockedAPICall = async (timeout: number = 2000) => {
 };
 
 export const AutoSaveForm = () => {
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -49,12 +50,16 @@ export const AutoSaveForm = () => {
         setIsLoading(true);
         //simulate API call and wait 2 seconds
         await mockedAPICall(2000);
-        toast.success(
-          `Autosaving form state: ${JSON.stringify(debouncedValue, null, 2)}`,
-          {
-            autoClose: 3000,
-          }
-        );
+        toast({
+          title: "Autosaved Form",
+          description: (
+            <div className="flex flex-col gap-2">
+              <span>Name: {debouncedValue.name}</span>
+              <span>Email: {debouncedValue.email}</span>
+              <span>Message: {debouncedValue.message}</span>
+            </div>
+          ),
+        });
         reset({ ...debouncedValue });
         setIsLoading(false);
       }
@@ -67,9 +72,7 @@ export const AutoSaveForm = () => {
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("submitting form data:", data);
-    toast.success(`Form submitted successfully!`, {
-      autoClose: 2000,
-    });
+    toast({ title: "Form submitted successfully!" });
   };
 
   return (
