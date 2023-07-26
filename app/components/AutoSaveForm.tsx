@@ -10,9 +10,7 @@ import { toast } from "react-toastify";
 const formSchema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
   email: z.string().email({ message: "Email is required" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must have at least 8 characters" }),
+  message: z.string().nonempty({ message: "Message is required" }),
 });
 
 //@ts-ignore
@@ -121,17 +119,16 @@ export const AutoSaveForm = () => {
         </small>
       </div>
       <div className="flex flex-col gap-4">
-        <label className="text-white font-semibold" htmlFor="password">
-          Password
+        <label className="text-white font-semibold" htmlFor="message">
+          Message
         </label>
-        <input
+        <textarea
           className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-          type="password"
-          {...register("password")}
+          {...register("message")}
           onChange={handleChange}
         />
         <small className="text-red-700">
-          {errors?.password && errors.password.message}
+          {errors?.message && errors.message.message}
         </small>
       </div>
       <button
