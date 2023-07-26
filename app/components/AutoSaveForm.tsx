@@ -103,9 +103,7 @@ export const AutoSaveForm = () => {
             type="text"
             {...register("name")}
           />
-          <small className="text-red-700">
-            {errors?.name && errors.name.message}
-          </small>
+          <small className="text-red-700">{errors?.name?.message}</small>
         </div>
         <div className="flex flex-col gap-4">
           <label className="text-white font-semibold" htmlFor="email">
@@ -116,9 +114,7 @@ export const AutoSaveForm = () => {
             type="email"
             {...register("email")}
           />
-          <small className="text-red-700">
-            {errors?.email && errors.email.message}
-          </small>
+          <small className="text-red-700">{errors?.email?.message}</small>
         </div>
         <div className="flex flex-col gap-4">
           <label className="text-white font-semibold" htmlFor="message">
@@ -128,9 +124,7 @@ export const AutoSaveForm = () => {
             className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
             {...register("message")}
           />
-          <small className="text-red-700">
-            {errors?.message && errors.message.message}
-          </small>
+          <small className="text-red-700">{errors?.message?.message}</small>
         </div>
         <Button
           variant="default"
