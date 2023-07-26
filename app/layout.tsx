@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "bg-slate-800 p-8")}>
+      <body className={cn(inter.className, "bg-slate-700 p-8")}>
         <main>{children}</main>
         <Toaster />
       </body>

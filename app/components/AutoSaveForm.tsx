@@ -137,7 +137,12 @@ export const AutoSaveForm = () => {
             {errors?.message && errors.message.message}
           </small>
         </div>
-        <Button type="submit" className="text-base" disabled={isLoading}>
+        <Button
+          variant="default"
+          type="submit"
+          className="my-4 text-base hover:scale-105 transition-transform duration-200 active:scale-95 focus-visible:scale-95"
+          disabled={isLoading}
+        >
           {isLoading ? (
             <>
               <Loader2 className="animate-spin" />{" "}
