@@ -51,9 +51,10 @@ export const AutoSaveForm = () => {
         //simulate API call and wait 2 seconds
         await mockedAPICall(2000);
         toast({
+          variant: "success",
           title: "Autosaved Form",
           description: (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 text-sm">
               <span>Name: {debouncedValue.name}</span>
               <span>Email: {debouncedValue.email}</span>
               <span>Message: {debouncedValue.message}</span>
@@ -72,7 +73,7 @@ export const AutoSaveForm = () => {
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     console.log("submitting form data:", data);
-    toast({ title: "Form submitted successfully!" });
+    toast({ variant: "success", title: "Form submitted successfully!" });
   };
 
   return (
