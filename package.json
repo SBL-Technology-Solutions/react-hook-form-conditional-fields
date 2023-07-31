@@ -1,9 +1,8 @@
 {
   "name": "react-hook-form-autosave",
-  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3006",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
