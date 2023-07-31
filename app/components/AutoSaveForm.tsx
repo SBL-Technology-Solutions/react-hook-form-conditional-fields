@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { Loader2, Send } from "lucide-react";
-import { useDebounce } from "usehooks-ts";
 import { useToast } from "@/components/ui/use-toast";
+import { useAutoSave } from "@/hooks/useAutoSave";
 
-const formSchema = z.object({
+export const formSchema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
   email: z.string().email({ message: "Email is required" }),
   message: z.string().nonempty({ message: "Message is required" }),
@@ -23,13 +23,8 @@ const mockedAPICall = async (timeout: number = 2000) => {
 export const AutoSaveForm = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isDirty, dirtyFields },
-    watch,
-    reset,
-  } = useForm<z.infer<typeof formSchema>>({
+
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     mode: "all",
     defaultValues: {
@@ -39,39 +34,32 @@ export const AutoSaveForm = () => {
     },
   });
 
-  const debouncedValue = useDebounce(watch(), 2000);
-  const DebouncedValueStringified = JSON.stringify(debouncedValue);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isDirty, dirtyFields },
+    reset,
+  } = form;
 
-  useEffect(() => {
-    console.log("save is triggered, checking if isDirty is true");
-    const debouncedSave = async () => {
-      if (!isDirty) {
-        console.log("autosave not triggered because form is not dirty");
-        return;
-      }
-      console.log("isDirty is true, saving form data");
-      setIsLoading(true);
-      //simulate API call and wait 2 seconds
-      await mockedAPICall(2000);
-      toast({
-        variant: "success",
-        title: "Autosaved Form",
-        description: (
-          <div className="flex flex-col gap-2 text-sm">
-            <span>Name: {debouncedValue.name}</span>
-            <span>Email: {debouncedValue.email}</span>
-            <span>Message: {debouncedValue.message}</span>
-          </div>
-        ),
-      });
-      reset({ ...debouncedValue });
-      setIsLoading(false);
-    };
-
-    debouncedSave();
-    // We are explicitly using only the debouncedValue as a dependency because we only want this useEffect to run when the debouncedValue changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [DebouncedValueStringified]);
+  const debouncedValue = useAutoSave(form, 2000, async () => {
+    console.log("isDirty is true, saving form data");
+    setIsLoading(true);
+    //simulate API call and wait 2 seconds
+    await mockedAPICall(2000);
+    toast({
+      variant: "success",
+      title: "Autosaved Form",
+      description: (
+        <div className="flex flex-col gap-2 text-sm">
+          <span>Name: {debouncedValue.name}</span>
+          <span>Email: {debouncedValue.email}</span>
+          <span>Message: {debouncedValue.message}</span>
+        </div>
+      ),
+    });
+    reset({ ...debouncedValue });
+    setIsLoading(false);
+  });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log("submitting form data:", data);
