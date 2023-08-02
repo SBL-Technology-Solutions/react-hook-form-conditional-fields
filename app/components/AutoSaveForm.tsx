@@ -52,7 +52,7 @@ export const AutoSaveForm = () => {
     await mockedAPICall(2000);
     toast({
       variant: "success",
-      title: "Autosaved Form",
+      title: "Form AutoSaved Successfully!",
       description: (
         <div className="flex flex-col gap-2 text-sm">
           {Object.entries(debouncedValue).map(([key, value]) => (
@@ -72,7 +72,19 @@ export const AutoSaveForm = () => {
     setSubmittingOrSaving("Submitting");
     setIsLoading(true);
     await mockedAPICall(2000);
-    toast({ variant: "success", title: "Form submitted successfully!" });
+    toast({
+      variant: "success",
+      title: "Form Submitted Successfully!",
+      description: (
+        <div className="flex flex-col gap-2 text-sm">
+          {Object.entries(data).map(([key, value]) => (
+            <span key={key}>
+              {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+            </span>
+          ))}
+        </div>
+      ),
+    });
     reset({ ...data });
     setIsLoading(false);
   };
@@ -88,6 +100,7 @@ export const AutoSaveForm = () => {
       <form
         className="flex flex-col gap-4 py-8"
         onSubmit={handleSubmit(onSubmit)}
+        noValidate
       >
         <div className="flex flex-col gap-2">
           <label className="text-white font-semibold" htmlFor="name">
