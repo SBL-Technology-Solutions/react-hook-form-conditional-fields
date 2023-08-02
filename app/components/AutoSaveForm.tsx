@@ -20,6 +20,22 @@ const mockedAPICall = async (timeout: number = 2000) => {
   await new Promise((resolve) => setTimeout(resolve, timeout));
 };
 
+const ToastFormState = ({
+  formState,
+}: {
+  formState: z.infer<typeof formSchema>;
+}) => {
+  return (
+    <div className="flex flex-col gap-2 text-sm">
+      {Object.entries(formState).map(([key, value]) => (
+        <span key={key}>
+          {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+        </span>
+      ))}
+    </div>
+  );
+};
+
 export const AutoSaveForm = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -53,15 +69,7 @@ export const AutoSaveForm = () => {
     toast({
       variant: "success",
       title: "Form AutoSaved Successfully!",
-      description: (
-        <div className="flex flex-col gap-2 text-sm">
-          {Object.entries(debouncedValue).map(([key, value]) => (
-            <span key={key}>
-              {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
-            </span>
-          ))}
-        </div>
-      ),
+      description: <ToastFormState formState={debouncedValue} />,
     });
     reset({ ...debouncedValue });
     setIsLoading(false);
@@ -75,15 +83,7 @@ export const AutoSaveForm = () => {
     toast({
       variant: "success",
       title: "Form Submitted Successfully!",
-      description: (
-        <div className="flex flex-col gap-2 text-sm">
-          {Object.entries(data).map(([key, value]) => (
-            <span key={key}>
-              {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
-            </span>
-          ))}
-        </div>
-      ),
+      description: <ToastFormState formState={data} />,
     });
     reset({ ...data });
     setIsLoading(false);
