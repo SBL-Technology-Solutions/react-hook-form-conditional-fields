@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/Button";
-import { Loader2, Send } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAutoSave } from "@/hooks/useAutoSave";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Send } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z.object({
   name: z.string().nonempty({ message: "Name is required" }),
@@ -23,6 +23,9 @@ const mockedAPICall = async (timeout: number = 2000) => {
 export const AutoSaveForm = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [submittingOrSaving, setSubmittingOrSaving] = useState<
+    "Submitting" | "Saving"
+  >("Saving");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,6 +46,7 @@ export const AutoSaveForm = () => {
 
   const debouncedValue = useAutoSave(form, 2000, async () => {
     console.log("isDirty is true, saving form data");
+    setSubmittingOrSaving("Saving");
     setIsLoading(true);
     //simulate API call and wait 2 seconds
     await mockedAPICall(2000);
@@ -65,6 +69,7 @@ export const AutoSaveForm = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log("submitting form data:", data);
+    setSubmittingOrSaving("Submitting");
     setIsLoading(true);
     await mockedAPICall(2000);
     toast({ variant: "success", title: "Form submitted successfully!" });
@@ -135,7 +140,7 @@ export const AutoSaveForm = () => {
           {isLoading ? (
             <>
               <Loader2 className="animate-spin" />{" "}
-              <span className="px-2">Saving...</span>
+              <span className="px-2">{submittingOrSaving}...</span>
             </>
           ) : (
             <>
