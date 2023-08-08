@@ -38,8 +38,8 @@ export const ConditionalForm = () => {
       name: '',
       email: '',
       message: '',
-      hasFavoriteColor: false, // Default value as boolean
-      favoriteColor: '', // Default value
+      hasFavoriteColor: false, 
+      favoriteColor: '', 
     },
   });
 
@@ -113,7 +113,6 @@ export const ConditionalForm = () => {
           )}
         </div>
         
-        {/* Conditional Field: Favorite Color */}
         <div className="flex flex-col gap-2">
           <label className="text-white font-semibold" htmlFor="hasFavoriteColor">
             Do you have a favorite color?
