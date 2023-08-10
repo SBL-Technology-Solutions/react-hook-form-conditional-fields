@@ -111,7 +111,7 @@ export const ConditionalForm = () => {
         {hasPetToy === 'true' && (
           <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetFood === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
             <label className="text-white font-semibold" htmlFor="petToyName">
-              What is the name of your pet's toy?
+              What is the name of your pet&apos;s toy?
             </label>
             <input
               className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
@@ -144,7 +144,7 @@ export const ConditionalForm = () => {
         {hasPetFood === 'true' && (
           <div className={`flex flex-col gap-2 animate-in slide-in-from-left`}>
             <label className="text-white font-semibold" htmlFor="petFoodName">
-              What is the name of your pet's food?
+              What is the name of your pet&apos;s food?
             </label>
             <input
               className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
