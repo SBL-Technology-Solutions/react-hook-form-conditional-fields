@@ -62,7 +62,7 @@ export const ConditionalForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPet === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+        <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPet === true ? 'animate-out slide-out-from-left' : ''}`}>
           <label className="text-white font-semibold" htmlFor="hasPet">
             Do you have a pet?
           </label>
@@ -75,8 +75,8 @@ export const ConditionalForm = () => {
           </select>
         </div>
 
-        {hasPet === 'true' && (
-          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetToy === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+        {hasPet === true && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetToy === true ? 'animate-out slide-out-from-left' : ''}`}>
             <label className="text-white font-semibold" htmlFor="petType">
               What type of pet do you have?
             </label>
@@ -93,8 +93,8 @@ export const ConditionalForm = () => {
           </div>
         )}
 
-        {hasPet === 'true' && (
-          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetToy === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+        {hasPet === true && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetToy === true ? 'animate-out slide-out-from-left' : ''}`}>
             <label className="text-white font-semibold" htmlFor="hasPetToy">
               Do you have a pet toy?
             </label>
@@ -108,8 +108,8 @@ export const ConditionalForm = () => {
           </div>
         )}
 
-        {hasPetToy === 'true' && (
-          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetFood === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+        {hasPetToy === true && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetFood === true ? 'animate-out slide-out-from-left' : ''}`}>
             <label className="text-white font-semibold" htmlFor="petToyName">
               What is the name of your pet&apos;s toy?
             </label>
@@ -126,8 +126,8 @@ export const ConditionalForm = () => {
           </div>
         )}
 
-        {hasPetToy === 'true' && (
-          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetFood === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+        {hasPetToy === true && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetFood === true ? 'animate-out slide-out-from-left' : ''}`}>
             <label className="text-white font-semibold" htmlFor="hasPetFood">
               Do you have pet food?
             </label>
@@ -141,7 +141,7 @@ export const ConditionalForm = () => {
           </div>
         )}
 
-        {hasPetFood === 'true' && (
+        {hasPetFood === true && (
           <div className={`flex flex-col gap-2 animate-in slide-in-from-left`}>
             <label className="text-white font-semibold" htmlFor="petFoodName">
               What is the name of your pet&apos;s food?
