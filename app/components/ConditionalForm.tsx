@@ -1,19 +1,19 @@
 "use client";
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
-import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Send } from 'lucide-react';
 import { z } from 'zod';
 
 const formSchema = z.object({
-  name: z.string().nonempty({ message: 'Name is required' }),
-  email: z.string().email({ message: 'Email is required' }),
-  message: z.string().nonempty({ message: 'Message is required' }),
-  hasFavoriteColor: z.boolean(),
-  favoriteColor: z.string().nonempty({ message: 'Favorite color is required' }),
+  hasPet: z.boolean(),
+  petType: z.string().nonempty({ message: 'Pet type is required' }),
+  hasPetToy: z.boolean(),
+  petToyName: z.string().nonempty({ message: 'Pet toy name is required' }),
+  hasPetFood: z.boolean(),
+  petFoodName: z.string().nonempty({ message: 'Pet food name is required' }),
 });
 
 const mockedAPICall = async (timeout: number = 2000) => {
@@ -22,7 +22,6 @@ const mockedAPICall = async (timeout: number = 2000) => {
 };
 
 export const ConditionalForm = () => {
-  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -35,32 +34,23 @@ export const ConditionalForm = () => {
     resolver: zodResolver(formSchema),
     mode: 'all',
     defaultValues: {
-      name: '',
-      email: '',
-      message: '',
-      hasFavoriteColor: false, // Default value as boolean
-      favoriteColor: '', // Default value
+      hasPet: false,
+      petType: '',
+      hasPetToy: false,
+      petToyName: '',
+      hasPetFood: false,
+      petFoodName: '',
     },
   });
 
-  const [isFavoriteColorVisible, setIsFavoriteColorVisible] = useState(false);
-
-  useEffect(() => {
-    if (watch('hasFavoriteColor')) {
-      setIsFavoriteColorVisible(true);
-    } else {
-      setIsFavoriteColorVisible(false);
-    }
-  }, [watch('hasFavoriteColor')]);
+  const hasPet = watch('hasPet');
+  const hasPetToy = watch('hasPetToy');
+  const hasPetFood = watch('hasPetFood');
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log('submitting form data:', data);
     setIsLoading(true);
     await mockedAPICall(2000);
-    toast({
-      variant: 'success',
-      title: 'Form Submitted Successfully!',
-    });
     reset();
     setIsLoading(false);
   };
@@ -72,80 +62,103 @@ export const ConditionalForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        <div className="flex flex-col gap-2">
-          <label className="text-white font-semibold" htmlFor="name">
-            Name
-          </label>
-          <input
-            className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-            type="text"
-            {...register('name')}
-          />
-          {errors.name && (
-            <span className="text-red-600 text-sm">{errors.name.message}</span>
-          )}
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-white font-semibold" htmlFor="email">
-            Email
-          </label>
-          <input
-            className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-            type="email"
-            {...register('email')}
-          />
-          {errors.email && (
-            <span className="text-red-600 text-sm">{errors.email.message}</span>
-          )}
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-white font-semibold" htmlFor="message">
-            Message
-          </label>
-          <textarea
-            className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-            {...register('message')}
-          />
-          {errors.message && (
-            <span className="text-red-600 text-sm">
-              {errors.message.message}
-            </span>
-          )}
-        </div>
-        
-        {/* Conditional Field: Favorite Color */}
-        <div className="flex flex-col gap-2">
-          <label className="text-white font-semibold" htmlFor="hasFavoriteColor">
-            Do you have a favorite color?
+        <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPet === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+          <label className="text-white font-semibold" htmlFor="hasPet">
+            Do you have a pet?
           </label>
           <select
             className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-            {...register('hasFavoriteColor')}
+            {...register('hasPet')}
           >
             <option value="true">Yes</option>
             <option value="false">No</option>
           </select>
-          {isFavoriteColorVisible && (
-            <div className="flex flex-col gap-2">
-              <label className="text-white font-semibold" htmlFor="favoriteColor">
-                Favorite Color
-              </label>
-              <input
-                className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
-                type="text"
-                {...register('favoriteColor', {
-                  required: 'Favorite color is required',
-                })}
-              />
-              {errors.favoriteColor && (
-                <span className="text-red-600 text-sm">
-                  {errors.favoriteColor.message}
-                </span>
-              )}
-            </div>
-          )}
         </div>
-        
+
+        {hasPet === 'true' && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetToy === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+            <label className="text-white font-semibold" htmlFor="petType">
+              What type of pet do you have?
+            </label>
+            <input
+              className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
+              type="text"
+              {...register('petType', {
+                required: 'Pet type is required',
+              })}
+            />
+            {errors.petType && (
+              <span className="text-red-600 text-sm">{errors.petType.message}</span>
+            )}
+          </div>
+        )}
+
+        {hasPet === 'true' && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetToy === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+            <label className="text-white font-semibold" htmlFor="hasPetToy">
+              Do you have a pet toy?
+            </label>
+            <select
+              className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
+              {...register('hasPetToy')}
+            >
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        )}
+
+        {hasPetToy === 'true' && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetFood === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+            <label className="text-white font-semibold" htmlFor="petToyName">
+              What is the name of your pet's toy?
+            </label>
+            <input
+              className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
+              type="text"
+              {...register('petToyName', {
+                required: 'Pet toy name is required',
+              })}
+            />
+            {errors.petToyName && (
+              <span className="text-red-600 text-sm">{errors.petToyName.message}</span>
+            )}
+          </div>
+        )}
+
+        {hasPetToy === 'true' && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left ${hasPetFood === 'true' ? 'animate-out slide-out-from-left' : ''}`}>
+            <label className="text-white font-semibold" htmlFor="hasPetFood">
+              Do you have pet food?
+            </label>
+            <select
+              className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
+              {...register('hasPetFood')}
+            >
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        )}
+
+        {hasPetFood === 'true' && (
+          <div className={`flex flex-col gap-2 animate-in slide-in-from-left`}>
+            <label className="text-white font-semibold" htmlFor="petFoodName">
+              What is the name of your pet's food?
+            </label>
+            <input
+              className="mt-2 w-full rounded bg-white px-2 py-1 text-black"
+              type="text"
+              {...register('petFoodName', {
+                required: 'Pet food name is required',
+              })}
+            />
+            {errors.petFoodName && (
+              <span className="text-red-600 text-sm">{errors.petFoodName.message}</span>
+            )}
+          </div>
+        )}
+
         <Button
           variant="default"
           type="submit"
